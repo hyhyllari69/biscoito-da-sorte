@@ -1,0 +1,339 @@
+/* ============================================================
+   Biscoitô da Sorte — CSS Mobile First 🥠
+   Paleta quentinha: massa de biscoito, chocolate e creme
+   ============================================================ */
+
+:root {
+  --bg: #fdf3e3;
+  --card: #ffffff;
+  --dough: #f2a65a;
+  --dough-dark: #d98a3d;
+  --choco: #6b3f20;
+  --choco-soft: #9a6b45;
+  --accent: #e2574c;
+  --shadow: 0 10px 30px rgba(107, 63, 32, 0.15);
+  --radius: 20px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #241a12;
+    --card: #33261a;
+    --dough: #f2a65a;
+    --dough-dark: #d98a3d;
+    --choco: #f7e6d0;
+    --choco-soft: #c9a480;
+    --accent: #ff7b6e;
+    --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  }
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--choco);
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* ---------- Cabeçalho ---------- */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+}
+
+.logo {
+  font-size: 1.35rem;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.logo span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--choco-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.btn-install {
+  border: none;
+  background: var(--dough);
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: transform 0.15s;
+}
+.btn-install:active { transform: scale(0.95); }
+
+/* ---------- Abas ---------- */
+.tabs {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px 4px;
+}
+
+.tab {
+  flex: 1;
+  border: 2px solid transparent;
+  background: transparent;
+  color: var(--choco-soft);
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.tab.active {
+  background: var(--card);
+  color: var(--choco);
+  box-shadow: var(--shadow);
+}
+
+.badge {
+  display: inline-block;
+  min-width: 20px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 999px;
+  vertical-align: 2px;
+}
+
+/* ---------- Conteúdo ---------- */
+main {
+  flex: 1;
+  padding: 12px 16px calc(24px + env(safe-area-inset-bottom));
+}
+
+.view { display: none; text-align: center; }
+.view.active { display: block; animation: fadeIn 0.25s ease; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.tagline {
+  color: var(--choco-soft);
+  font-size: 0.95rem;
+  margin: 12px 0 20px;
+}
+
+/* ---------- O biscoito ---------- */
+.cookie {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 8px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cookie-emoji {
+  display: inline-block;
+  font-size: clamp(7rem, 38vw, 12rem);
+  line-height: 1;
+  filter: drop-shadow(0 14px 18px rgba(107, 63, 32, 0.3));
+  transition: transform 0.2s;
+}
+
+.cookie:active .cookie-emoji { transform: scale(0.92); }
+.cookie.shake .cookie-emoji { animation: shake 0.5s ease; }
+
+@keyframes shake {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-12deg) scale(1.05); }
+  40% { transform: rotate(10deg) scale(1.05); }
+  60% { transform: rotate(-8deg) scale(1.08); }
+  80% { transform: rotate(6deg) scale(1.1); }
+}
+
+.cookie.open .cookie-emoji { animation: pop 0.35s ease; }
+
+@keyframes pop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.35) rotate(8deg); }
+  100% { transform: scale(1); }
+}
+
+/* ---------- Cartão da sorte ---------- */
+.fortune-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 18px;
+  margin: 8px auto 0;
+  max-width: 420px;
+  animation: fadeIn 0.4s ease;
+}
+
+.fortune-text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+
+.fortune-nums {
+  font-size: 0.8rem;
+  color: var(--choco-soft);
+  letter-spacing: 0.15em;
+  margin-bottom: 16px;
+}
+
+.fortune-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn {
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 12px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.btn:active { transform: scale(0.95); }
+
+.btn.solid {
+  background: var(--dough);
+  color: #fff;
+  box-shadow: var(--shadow);
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 2px solid var(--dough-dark);
+  color: var(--choco);
+}
+
+.btn.ghost.saved-state {
+  background: var(--dough);
+  border-color: var(--dough);
+  color: #fff;
+}
+
+.counter {
+  margin-top: 18px;
+  font-size: 0.85rem;
+  color: var(--choco-soft);
+}
+
+/* ---------- Guardados ---------- */
+.saved-list {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  max-width: 420px;
+  margin: 8px auto 0;
+  text-align: left;
+}
+
+.saved-item {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  animation: fadeIn 0.25s ease;
+}
+
+.saved-item p {
+  flex: 1;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.saved-item time {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--choco-soft);
+  margin-top: 6px;
+}
+
+.btn-delete {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.6;
+  padding: 4px;
+}
+.btn-delete:active { opacity: 1; transform: scale(1.2); }
+
+.empty {
+  color: var(--choco-soft);
+  padding: 48px 20px;
+}
+
+.empty-emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+
+/* ---------- Rodapé ---------- */
+.footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--choco-soft);
+  padding: 16px;
+  padding-bottom: calc(16px + env(safe-area-inset-bottom));
+}
+
+.footer-joke { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(24px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  background: var(--choco);
+  color: var(--bg);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  animation: fadeIn 0.2s ease;
+  max-width: 90vw;
+  z-index: 10;
+}
+
+/* ---------- Telas maiores (progressivo) ---------- */
+@media (min-width: 480px) {
+  .header { padding-left: 28px; padding-right: 28px; }
+  .tabs, main { padding-left: 28px; padding-right: 28px; }
+}
+
+@media (min-width: 768px) {
+  .logo { font-size: 1.6rem; }
+  .tagline { font-size: 1.05rem; }
+  .fortune-text { font-size: 1.2rem; }
+}
+
+@media (min-width: 1024px) {
+  main { padding-top: 32px; }
+}

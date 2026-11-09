@@ -1,0 +1,20 @@
+# ============================================================
+# Biscoitô da Sorte — Blueprint de deploy no Render.com 🥠
+# New + → Blueprint → selecione este repositório → Apply
+# Cria automaticamente o site estático do PWA.
+# ============================================================
+
+services:
+  - type: web
+    name: biscoito-pwa
+    runtime: static
+    rootDir: biscoito
+    staticPublishPath: .
+    headers:
+      # garante que o service worker seja sempre atualizado
+      - path: /js/sw.js
+        name: Cache-Control
+        value: no-cache
+      - path: /manifest.json
+        name: Cache-Control
+        value: no-cache

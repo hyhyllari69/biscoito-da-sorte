@@ -1,0 +1,9 @@
+# Dependências
+node_modules/
+
+# Dados de execução do backend
+backend/data/
+
+# Sistema
+.DS_Store
+Thumbs.db
