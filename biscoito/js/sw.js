@@ -4,7 +4,7 @@
    ============================================================ */
 'use strict';
 
-const CACHE_NAME = 'biscoito-v1';
+const CACHE_NAME = 'biscoito-v2';
 const ASSETS = [
   './',
   './index.html',

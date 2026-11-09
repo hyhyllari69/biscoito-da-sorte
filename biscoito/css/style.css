@@ -1,18 +1,21 @@
 /* ============================================================
    Biscoitô da Sorte — CSS Mobile First 🥠
-   Paleta quentinha: massa de biscoito, chocolate e creme
+   Cenário de padaria: farinha no ar, luz de forno, migalhas
    ============================================================ */
 
 :root {
   --bg: #fdf3e3;
-  --card: #ffffff;
+  --card: #fffdf7;
   --dough: #f2a65a;
   --dough-dark: #d98a3d;
+  --dough-light: #f8c98b;
   --choco: #6b3f20;
   --choco-soft: #9a6b45;
+  --paper: #fffbe9;
+  --paper-edge: #c9a480;
   --accent: #e2574c;
   --shadow: 0 10px 30px rgba(107, 63, 32, 0.15);
-  --radius: 20px;
+  --font-hand: "Segoe Print", "Bradley Hand", "Comic Sans MS", "Chalkboard SE", cursive;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -21,8 +24,11 @@
     --card: #33261a;
     --dough: #f2a65a;
     --dough-dark: #d98a3d;
+    --dough-light: #f8c98b;
     --choco: #f7e6d0;
     --choco-soft: #c9a480;
+    --paper: #4a3a28;
+    --paper-edge: #8a6a45;
     --accent: #ff7b6e;
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   }
@@ -30,16 +36,64 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
   font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
-  background: var(--bg);
   color: var(--choco);
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  transition: background 0.3s, color 0.3s;
+  position: relative;
+  overflow-x: hidden;
+  background:
+    /* luz quente de forno no topo */
+    radial-gradient(120% 60% at 50% -10%, rgba(242, 166, 90, 0.35), transparent 60%),
+    /* farinha espalhada */
+    radial-gradient(rgba(255, 255, 255, 0.5) 1.2px, transparent 1.4px),
+    radial-gradient(rgba(217, 138, 61, 0.12) 1.6px, transparent 1.8px),
+    var(--bg);
+  background-size: 100% 100%, 26px 26px, 42px 42px, 100% 100%;
+  background-position: 0 0, 0 0, 14px 21px, 0 0;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background:
+      radial-gradient(120% 60% at 50% -10%, rgba(242, 166, 90, 0.14), transparent 60%),
+      radial-gradient(rgba(255, 255, 255, 0.04) 1.2px, transparent 1.4px),
+      radial-gradient(rgba(217, 138, 61, 0.08) 1.6px, transparent 1.8px),
+      var(--bg);
+    background-size: 100% 100%, 26px 26px, 42px 42px, 100% 100%;
+  }
+}
+
+/* ---------- Migalhas flutuantes ---------- */
+.crumbs {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.crumb {
+  position: absolute;
+  font-size: var(--size, 12px);
+  opacity: 0.55;
+  animation: crumbFloat var(--dur, 14s) linear var(--delay, 0s) infinite;
+}
+
+@keyframes crumbFloat {
+  0%   { transform: translate(0, 105vh) rotate(0deg); }
+  100% { transform: translate(var(--drift, 20px), -10vh) rotate(320deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crumb { animation: none; position: fixed; opacity: 0; }
 }
 
 /* ---------- Cabeçalho ---------- */
@@ -49,62 +103,86 @@ body {
   justify-content: space-between;
   gap: 8px;
   padding: calc(12px + env(safe-area-inset-top)) 16px 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .logo {
-  font-size: 1.35rem;
+  font-size: 1.3rem;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   line-height: 1.1;
 }
 
-.logo span {
-  font-size: 0.75rem;
-  font-weight: 600;
+.logo-cookie {
+  width: 44px;
+  height: 44px;
+  filter: drop-shadow(0 4px 6px rgba(107, 63, 32, 0.25));
+  animation: logoWobble 5s ease-in-out infinite;
+}
+
+@keyframes logoWobble {
+  0%, 100% { transform: rotate(-4deg); }
+  50% { transform: rotate(5deg); }
+}
+
+.logo-text { display: flex; flex-direction: column; }
+
+.logo-text span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-family: var(--font-hand);
   color: var(--choco-soft);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
 }
 
 .btn-install {
   border: none;
-  background: var(--dough);
-  color: #fff;
-  font-weight: 700;
+  background: linear-gradient(180deg, var(--dough-light), var(--dough-dark));
+  color: #5c3413;
+  font-weight: 800;
   font-size: 0.85rem;
   padding: 10px 14px;
-  border-radius: 999px;
+  border-radius: 999px 999px 999px 4px;
   cursor: pointer;
   box-shadow: var(--shadow);
   transition: transform 0.15s;
 }
 .btn-install:active { transform: scale(0.95); }
 
-/* ---------- Abas ---------- */
+/* ---------- Abas — plaquinhas de biscoito ---------- */
 .tabs {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   padding: 0 16px 4px;
+  position: relative;
+  z-index: 1;
 }
 
 .tab {
   flex: 1;
-  border: 2px solid transparent;
+  border: 2.5px solid var(--dough-dark);
   background: transparent;
   color: var(--choco-soft);
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
   padding: 10px;
-  border-radius: 999px;
+  border-radius: 18px 14px 20px 12px;
   cursor: pointer;
-  transition: background 0.2s, color 0.2s;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
 }
 
 .tab.active {
-  background: var(--card);
-  color: var(--choco);
+  background: linear-gradient(180deg, var(--dough-light), var(--dough));
+  color: #5c3413;
+  border-color: var(--dough-dark);
   box-shadow: var(--shadow);
+  transform: rotate(-0.5deg);
 }
+
+.tab.active:nth-child(2) { transform: rotate(0.5deg); }
 
 .badge {
   display: inline-block;
@@ -121,6 +199,8 @@ body {
 main {
   flex: 1;
   padding: 12px 16px calc(24px + env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 1;
 }
 
 .view { display: none; text-align: center; }
@@ -133,70 +213,159 @@ main {
 
 .tagline {
   color: var(--choco-soft);
-  font-size: 0.95rem;
-  margin: 12px 0 20px;
+  font-family: var(--font-hand);
+  font-size: 0.98rem;
+  margin: 12px 0 8px;
 }
 
-/* ---------- O biscoito ---------- */
+/* ---------- Palco do biscoito ---------- */
+.cookie-stage {
+  position: relative;
+  display: inline-block;
+  padding: 18px;
+}
+
+.cookie-halo {
+  position: absolute;
+  inset: -18px;
+  background: radial-gradient(circle, rgba(255, 210, 140, 0.55), transparent 65%);
+  border-radius: 50%;
+  animation: haloPulse 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes haloPulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.12); opacity: 1; }
+}
+
 .cookie {
+  position: relative;
   border: none;
   background: transparent;
   cursor: pointer;
-  padding: 8px;
+  padding: 0;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  display: block;
 }
 
-.cookie-emoji {
-  display: inline-block;
-  font-size: clamp(7rem, 38vw, 12rem);
-  line-height: 1;
+.cookie-svg {
+  width: clamp(220px, 62vw, 340px);
+  height: auto;
+  display: block;
+  overflow: visible;
   filter: drop-shadow(0 14px 18px rgba(107, 63, 32, 0.3));
+  animation: idleFloat 4s ease-in-out infinite;
   transition: transform 0.2s;
 }
 
-.cookie:active .cookie-emoji { transform: scale(0.92); }
-.cookie.shake .cookie-emoji { animation: shake 0.5s ease; }
+@keyframes idleFloat {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1.5deg); }
+}
 
-@keyframes shake {
+.cookie:active .cookie-svg { transform: scale(0.94); }
+.cookie.is-cracking .cookie-svg { animation: crunch 0.5s ease; }
+
+@keyframes crunch {
   0%, 100% { transform: rotate(0); }
-  20% { transform: rotate(-12deg) scale(1.05); }
-  40% { transform: rotate(10deg) scale(1.05); }
-  60% { transform: rotate(-8deg) scale(1.08); }
-  80% { transform: rotate(6deg) scale(1.1); }
+  20% { transform: rotate(-6deg) scale(1.04); }
+  40% { transform: rotate(5deg) scale(1.06); }
+  60% { transform: rotate(-4deg) scale(1.08); }
+  80% { transform: rotate(3deg) scale(1.1); }
 }
 
-.cookie.open .cookie-emoji { animation: pop 0.35s ease; }
+/* rachadura: desenhada com traço animado */
+.ck-crack {
+  stroke-dasharray: 160;
+  stroke-dashoffset: 160;
+  transition: stroke-dashoffset 0.45s ease;
+}
+.cookie.is-cracking .ck-crack { stroke-dashoffset: 0; }
 
-@keyframes pop {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.35) rotate(8deg); }
-  100% { transform: scale(1); }
+/* fenda escurece ao abrir */
+.ck-crease { transform-origin: 142px 46px; transition: transform 0.35s ease; }
+.cookie.is-open .ck-crease { transform: scaleY(2); }
+
+/* papelzinho sai da fenda */
+.ck-paper {
+  transform: translate(0, 34px) scale(0.6);
+  opacity: 0;
+  transform-origin: 150px 45px;
+  transition: transform 0.5s cubic-bezier(0.2, 0.9, 0.3, 1.2), opacity 0.4s ease;
+}
+.cookie.is-open .ck-paper {
+  transform: translate(0, -12px) scale(1.12) rotate(-4deg);
+  opacity: 1;
 }
 
-/* ---------- Cartão da sorte ---------- */
+/* migalhas voam */
+.ck-crumbbits .cb { opacity: 0; }
+.cookie.is-open .cb { animation: crumbBurst 0.7s ease-out; }
+.cookie.is-open .cb2 { animation-delay: 0.05s; }
+.cookie.is-open .cb3 { animation-delay: 0.1s; }
+.cookie.is-open .cb4 { animation-delay: 0.15s; }
+
+@keyframes crumbBurst {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--dx, 20px), -46px) scale(0.4); }
+}
+.cb1 { --dx: -34px; }
+.cb2 { --dx: 30px; }
+.cb3 { --dx: -12px; }
+.cb4 { --dx: 40px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .cookie-svg, .cookie-halo, .logo-cookie { animation: none !important; }
+}
+
+/* ---------- Cartão da sorte — papelzinho pergaminho ---------- */
 .fortune-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 20px 18px;
-  margin: 8px auto 0;
+  margin: 6px auto 0;
   max-width: 420px;
   animation: fadeIn 0.4s ease;
 }
 
+.fortune-paper {
+  background:
+    linear-gradient(180deg, rgba(201, 164, 128, 0.12), transparent 30%),
+    var(--paper);
+  border: 2px dashed var(--paper-edge);
+  border-radius: 6px 22px 8px 20px;
+  padding: 22px 18px 18px;
+  transform: rotate(-0.8deg);
+  box-shadow: 0 8px 18px rgba(107, 63, 32, 0.14);
+  position: relative;
+}
+
+/* furinhos de "mordida" no cantinho do papel */
+.fortune-paper::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  right: 14px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: 18px 3px 0 -2px var(--bg), 34px 6px 0 -3px var(--bg);
+}
+
 .fortune-text {
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-family: var(--font-hand);
+  font-size: 1.18rem;
+  font-weight: 700;
   line-height: 1.45;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  color: var(--choco);
 }
 
 .fortune-nums {
   font-size: 0.8rem;
   color: var(--choco-soft);
   letter-spacing: 0.15em;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
 }
 
 .fortune-actions {
@@ -206,43 +375,54 @@ main {
   justify-content: center;
 }
 
+/* ---------- Botões-biscoito ---------- */
 .btn {
   border: none;
   font-size: 0.9rem;
   font-weight: 700;
   padding: 12px 16px;
-  border-radius: 999px;
+  border-radius: 18px 12px 20px 14px;
   cursor: pointer;
-  transition: transform 0.15s, opacity 0.2s;
+  transition: transform 0.15s, opacity 0.2s, box-shadow 0.2s;
   -webkit-tap-highlight-color: transparent;
 }
-.btn:active { transform: scale(0.95); }
+.btn:active { transform: scale(0.95) rotate(-1deg); }
 
 .btn.solid {
-  background: var(--dough);
-  color: #fff;
-  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, var(--dough-light), var(--dough-dark));
+  color: #5c3413;
+  box-shadow: inset 0 -3px 0 rgba(122, 67, 24, 0.4), var(--shadow);
 }
 
 .btn.ghost {
-  background: transparent;
+  background: var(--card);
   border: 2px solid var(--dough-dark);
   color: var(--choco);
 }
 
+.btn.ghost:hover { box-shadow: 0 0 0 4px rgba(242, 166, 90, 0.2); }
+
 .btn.ghost.saved-state {
-  background: var(--dough);
-  border-color: var(--dough);
-  color: #fff;
+  background: linear-gradient(180deg, var(--dough-light), var(--dough));
+  border-color: var(--dough-dark);
+  color: #5c3413;
 }
 
+/* ---------- Contador de migalhas ---------- */
 .counter {
   margin-top: 18px;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  font-family: var(--font-hand);
   color: var(--choco-soft);
+  display: inline-block;
+  background: var(--card);
+  border: 2px dashed var(--paper-edge);
+  border-radius: 999px;
+  padding: 6px 14px;
 }
 
-/* ---------- Guardados ---------- */
+/* ---------- Guardados — pote de biscoitos ---------- */
 .saved-list {
   list-style: none;
   display: grid;
@@ -253,45 +433,58 @@ main {
 }
 
 .saved-item {
-  background: var(--card);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 16px;
+  background: linear-gradient(180deg, var(--dough-light), var(--dough));
+  border: 2.5px solid var(--dough-dark);
+  border-radius: 26px 20px 28px 18px;
+  padding: 14px 14px;
   display: flex;
   align-items: flex-start;
   gap: 10px;
   animation: fadeIn 0.25s ease;
+  box-shadow: inset 0 2px 0 rgba(255, 246, 230, 0.6), var(--shadow);
+  color: #5c3413;
 }
 
 .saved-item p {
   flex: 1;
+  font-family: var(--font-hand);
   font-size: 0.95rem;
   line-height: 1.4;
 }
 
 .saved-item time {
   display: block;
-  font-size: 0.7rem;
-  color: var(--choco-soft);
+  font-family: "Segoe UI", system-ui, sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  opacity: 0.75;
   margin-top: 6px;
 }
 
 .btn-delete {
   border: none;
-  background: transparent;
-  font-size: 1.1rem;
+  background: rgba(255, 251, 239, 0.6);
+  border-radius: 50%;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
   cursor: pointer;
-  opacity: 0.6;
-  padding: 4px;
+  transition: transform 0.15s;
 }
-.btn-delete:active { opacity: 1; transform: scale(1.2); }
+.btn-delete:active { transform: scale(1.2) rotate(8deg); }
 
 .empty {
   color: var(--choco-soft);
-  padding: 48px 20px;
+  padding: 30px 20px;
 }
 
-.empty-emoji { font-size: 3rem; display: block; margin-bottom: 12px; }
+.jar {
+  width: 110px;
+  height: auto;
+  display: block;
+  margin: 0 auto 12px;
+  animation: idleFloat 5s ease-in-out infinite;
+}
 
 /* ---------- Rodapé ---------- */
 .footer {
@@ -300,22 +493,25 @@ main {
   color: var(--choco-soft);
   padding: 16px;
   padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  position: relative;
+  z-index: 1;
 }
 
 .footer-joke { font-size: 0.7rem; opacity: 0.7; margin-top: 4px; }
 
-/* ---------- Toast ---------- */
+/* ---------- Toast — etiqueta de papel ---------- */
 .toast {
   position: fixed;
   left: 50%;
   bottom: calc(24px + env(safe-area-inset-bottom));
-  transform: translateX(-50%);
-  background: var(--choco);
-  color: var(--bg);
+  transform: translateX(-50%) rotate(-1deg);
+  background: var(--paper);
+  border: 2px dashed var(--paper-edge);
+  color: var(--choco);
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 12px 20px;
-  border-radius: 999px;
+  border-radius: 4px 14px 6px 16px;
   box-shadow: var(--shadow);
   animation: fadeIn 0.2s ease;
   max-width: 90vw;
@@ -329,9 +525,9 @@ main {
 }
 
 @media (min-width: 768px) {
-  .logo { font-size: 1.6rem; }
-  .tagline { font-size: 1.05rem; }
-  .fortune-text { font-size: 1.2rem; }
+  .logo { font-size: 1.55rem; }
+  .tagline { font-size: 1.08rem; }
+  .fortune-text { font-size: 1.28rem; }
 }
 
 @media (min-width: 1024px) {

@@ -52,7 +52,7 @@ const FORTUNES = [
 /* ---------- Referências ---------- */
 const $ = (sel) => document.querySelector(sel);
 const cookieBtn = $('#cookie');
-const cookieEmoji = $('#cookie-emoji');
+const cookieSvg = $('#cookie-svg');
 const fortuneCard = $('#fortune-card');
 const fortuneText = $('#fortune-text');
 const fortuneNums = $('#fortune-nums');
@@ -110,17 +110,69 @@ function randomFortune() {
   return text;
 }
 
+/* ---------- Som de crunch (WebAudio, sem assets) ---------- */
+let audioCtx = null;
+function playCrunch() {
+  try {
+    audioCtx ??= new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    const dur = 0.22;
+    const buffer = audioCtx.createBuffer(1, audioCtx.sampleRate * dur, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < data.length; i++) {
+      const decay = 1 - i / data.length;
+      data[i] = (Math.random() * 2 - 1) * decay * decay;
+    }
+
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 1400;
+
+    const gain = audioCtx.createGain();
+    gain.gain.value = 0.25;
+
+    src.connect(filter).connect(gain).connect(audioCtx.destination);
+    src.start();
+  } catch { /* áudio é bônus, nunca bloca */ }
+}
+
+/* ---------- Migalhas flutuantes de fundo ---------- */
+function spawnCrumbs() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const stage = $('#crumbs');
+  const emojis = ['🍪', '🥠', '·', '🍪', '·'];
+  for (let i = 0; i < 12; i++) {
+    const c = document.createElement('span');
+    c.className = 'crumb';
+    c.textContent = emojis[i % emojis.length];
+    c.style.left = `${Math.random() * 100}vw`;
+    c.style.setProperty('--size', `${8 + Math.random() * 14}px`);
+    c.style.setProperty('--dur', `${12 + Math.random() * 14}s`);
+    c.style.setProperty('--delay', `${-Math.random() * 20}s`);
+    c.style.setProperty('--drift', `${(Math.random() - 0.5) * 90}px`);
+    stage.appendChild(c);
+  }
+}
+
 /* ---------- Abrir o biscoito ---------- */
 function openCookie() {
-  if (cookieBtn.classList.contains('shake')) return;
+  if (cookieBtn.classList.contains('is-cracking')) return;
 
-  cookieEmoji.textContent = '🥠';
+  // reseta para o estado inteiro
+  cookieBtn.classList.remove('is-open');
+  cookieBtn.classList.add('is-whole');
+  void cookieSvg.offsetWidth; // força reflow p/ reiniciar animações
   fortuneCard.hidden = true;
-  cookieBtn.classList.add('shake');
+  cookieBtn.classList.add('is-cracking');
+  playCrunch();
 
   setTimeout(() => {
-    cookieBtn.classList.remove('shake');
-    cookieBtn.classList.add('open');
+    cookieBtn.classList.remove('is-cracking');
+    cookieBtn.classList.add('is-open');
 
     currentFortune = randomFortune();
     STORE.last = currentFortune;
@@ -131,8 +183,6 @@ function openCookie() {
     updateSaveButton();
     updateCounter();
     fortuneCard.hidden = false;
-
-    setTimeout(() => cookieBtn.classList.remove('open'), 400);
   }, 520);
 }
 
@@ -200,9 +250,7 @@ function renderSaved() {
 function updateCounter() {
   const n = STORE.count;
   counterEl.hidden = n === 0;
-  counterEl.textContent = n === 1
-    ? 'Seu 1º biscoito da sessão era mentira: conta desde sempre! 🍪'
-    : `Você já abriu ${n} biscoitos. Forno não para! 🔥`;
+  counterEl.textContent = `🍪 × ${n} · forno sempre ligado! 🔥`;
 }
 
 /* ---------- Compartilhar ---------- */
@@ -263,6 +311,7 @@ $('#tab-cookie').addEventListener('click', () => switchTab('cookie'));
 $('#tab-saved').addEventListener('click', () => switchTab('saved'));
 
 /* ---------- Inicialização ---------- */
+spawnCrumbs();
 renderSaved();
 updateCounter();
 

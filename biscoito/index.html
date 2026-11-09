@@ -16,8 +16,21 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- migalhas flutuantes (geradas via JS) -->
+  <div id="crumbs" class="crumbs" aria-hidden="true"></div>
+
   <header class="header">
-    <h1 class="logo">🥠 Biscoitô<span>da Sorte</span></h1>
+    <h1 class="logo">
+      <svg class="logo-cookie" viewBox="0 0 64 64" aria-hidden="true">
+        <circle cx="32" cy="34" r="24" fill="#EEB872" stroke="#A8601F" stroke-width="3"/>
+        <circle cx="32" cy="30" r="20" fill="#F6BE7A"/>
+        <circle cx="24" cy="26" r="3" fill="#6E4628"/>
+        <circle cx="40" cy="36" r="3.4" fill="#6E4628"/>
+        <circle cx="28" cy="42" r="2.6" fill="#6E4628"/>
+        <circle cx="42" cy="22" r="2.4" fill="#6E4628"/>
+      </svg>
+      <span class="logo-text">Biscoitô<span>da Sorte</span></span>
+    </h1>
     <button id="btn-install" class="btn-install" hidden>📲 Instalar app</button>
   </header>
 
@@ -31,13 +44,81 @@
     <section id="view-cookie" class="view active" aria-label="Abra seu biscoito">
       <p class="tagline">Toque no biscoito para descobrir sua sorte do dia ✨</p>
 
-      <button id="cookie" class="cookie" aria-label="Abrir biscoito da sorte">
-        <span class="cookie-emoji" id="cookie-emoji">🥠</span>
-      </button>
+      <div class="cookie-stage">
+        <span class="cookie-halo" aria-hidden="true"></span>
+        <button id="cookie" class="cookie is-whole" aria-label="Abrir biscoito da sorte">
+          <svg id="cookie-svg" class="cookie-svg" viewBox="0 0 260 210" aria-hidden="true">
+            <defs>
+              <linearGradient id="dough" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#F8C98B"/>
+                <stop offset="0.55" stop-color="#EEB872"/>
+                <stop offset="1" stop-color="#D98A3D"/>
+              </linearGradient>
+              <linearGradient id="dough-back" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#E2A75F"/>
+                <stop offset="1" stop-color="#C97F35"/>
+              </linearGradient>
+              <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#FFFBEF"/>
+                <stop offset="1" stop-color="#F3E4C4"/>
+              </linearGradient>
+            </defs>
+
+            <!-- sombra no chão -->
+            <ellipse class="ck-shadow" cx="130" cy="192" rx="86" ry="13" fill="#6B3F20" opacity="0.18"/>
+
+            <!-- metade de trás (dobra) -->
+            <path d="M26,108 C 20,66 62,34 112,32 C 168,30 214,64 220,106 C 226,148 190,184 138,188 C 86,192 38,164 28,124 C 26,118 26,113 26,108 Z"
+                  fill="url(#dough-back)" stroke="#A8601F" stroke-width="3"/>
+            <!-- metade da frente -->
+            <path d="M30,106 C 28,72 64,44 110,44 C 158,44 198,72 202,108 C 206,144 172,174 126,178 C 82,182 36,158 30,120 C 29,115 30,110 30,106 Z"
+                  fill="url(#dough)" stroke="#A8601F" stroke-width="3"/>
+            <!-- brilho da massa -->
+            <path d="M52,84 C 62,62 92,52 122,52" fill="none" stroke="#FBE0B8" stroke-width="7" stroke-linecap="round" opacity="0.7"/>
+
+            <!-- vinco do dobro -->
+            <path d="M30,104 C 58,84 82,74 108,66" fill="none" stroke="#B4712F" stroke-width="3" stroke-linecap="round" opacity="0.55"/>
+            <path d="M30,112 C 56,130 76,142 98,154" fill="none" stroke="#B4712F" stroke-width="3" stroke-linecap="round" opacity="0.45"/>
+
+            <!-- furações/sussurros da massa -->
+            <circle cx="88" cy="108" r="2.6" fill="#C97F35" opacity="0.8"/>
+            <circle cx="140" cy="92" r="2.2" fill="#C97F35" opacity="0.7"/>
+            <circle cx="168" cy="132" r="2.6" fill="#C97F35" opacity="0.7"/>
+            <circle cx="120" cy="142" r="2.2" fill="#C97F35" opacity="0.7"/>
+            <circle cx="182" cy="100" r="2" fill="#C97F35" opacity="0.6"/>
+
+            <!-- abertura escura (fenda) -->
+            <path class="ck-crease" d="M118,46 C 132,38 152,38 166,46 C 152,52 132,52 118,46 Z" fill="#7A4318"/>
+
+            <!-- rachadura (aparece ao quebrar) -->
+            <path class="ck-crack" d="M96,168 L112,132 L106,108 L124,82 L120,58"
+                  fill="none" stroke="#7A4318" stroke-width="3.4" stroke-linecap="round"/>
+
+            <!-- papelzinho da sorte (sobe ao abrir) -->
+            <g class="ck-paper">
+              <path d="M124,50 L120,6 L176,0 L182,46 L172,38 L164,48 L156,38 L148,48 L140,38 L132,48 Z"
+                    fill="url(#paper)" stroke="#C9A480" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="130" y1="14" x2="168" y2="10" stroke="#C9A480" stroke-width="2.4" stroke-linecap="round"/>
+              <line x1="131" y1="23" x2="166" y2="19" stroke="#C9A480" stroke-width="2.4" stroke-linecap="round"/>
+              <line x1="132" y1="32" x2="158" y2="29" stroke="#C9A480" stroke-width="2.4" stroke-linecap="round"/>
+            </g>
+
+            <!-- migalhas que voam ao abrir -->
+            <g class="ck-crumbbits" aria-hidden="true">
+              <circle class="cb cb1" cx="120" cy="60" r="4" fill="#D98A3D"/>
+              <circle class="cb cb2" cx="150" cy="50" r="3" fill="#B4712F"/>
+              <circle class="cb cb3" cx="136" cy="72" r="3.4" fill="#EEB872"/>
+              <circle class="cb cb4" cx="166" cy="66" r="2.6" fill="#D98A3D"/>
+            </g>
+          </svg>
+        </button>
+      </div>
 
       <div id="fortune-card" class="fortune-card" hidden>
-        <p class="fortune-text" id="fortune-text"></p>
-        <p class="fortune-nums" id="fortune-nums"></p>
+        <div class="fortune-paper">
+          <p class="fortune-text" id="fortune-text"></p>
+          <p class="fortune-nums" id="fortune-nums"></p>
+        </div>
         <div class="fortune-actions">
           <button id="btn-save" class="btn ghost" title="Guardar na coleção">⭐ Guardar</button>
           <button id="btn-share" class="btn ghost" title="Compartilhar">↗️ Enviar</button>
@@ -52,7 +133,17 @@
     <section id="view-saved" class="view" aria-label="Sortes guardadas">
       <ul id="saved-list" class="saved-list"></ul>
       <div id="empty-saved" class="empty">
-        <span class="empty-emoji">🍪</span>
+        <!-- pote de biscoitos vazio -->
+        <svg class="jar" viewBox="0 0 120 150" aria-hidden="true">
+          <rect x="34" y="8" width="52" height="16" rx="6" fill="#B4712F"/>
+          <rect x="30" y="22" width="60" height="8" rx="4" fill="#A8601F"/>
+          <path d="M32,32 L88,32 C 100,44 106,60 106,86 L106,124 C 106,136 96,144 84,144 L36,144 C 24,144 14,136 14,124 L14,86 C 14,60 20,44 32,32 Z"
+                fill="#DFF0F2" opacity="0.5" stroke="#8FB8BD" stroke-width="3"/>
+          <ellipse cx="60" cy="132" rx="30" ry="6" fill="#B4712F" opacity="0.25"/>
+          <path d="M14,90 C 30,82 46,96 60,90 C 76,84 92,96 106,90 L106,124 C 106,136 96,144 84,144 L36,144 C 24,144 14,136 14,124 Z"
+                fill="#F3E4C4" opacity="0.9"/>
+          <text x="60" y="70" text-anchor="middle" font-size="22">🥠</text>
+        </svg>
         <p>Nenhuma sorte guardada ainda.<br/>Abra biscoitos e guarde as suas favoritas!</p>
       </div>
     </section>
